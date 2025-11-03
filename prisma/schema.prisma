@@ -1,0 +1,40 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  balance   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  GroupMember GroupMember[]
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  name      String
+  members   GroupMember[]
+}
+
+model GroupMember {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  groupId  Int
+  user     User     @relation(fields: [userId], references: [id])
+  group    Group    @relation(fields: [groupId], references: [id])
+}
+
+model Usage {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  date      DateTime
+  duration  Int
+  groupId   Int
+}
